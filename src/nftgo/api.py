@@ -21,7 +21,7 @@ async def collection(slug):
     slug = slug.lower()
 
     async with aiohttp.ClientSession() as session:
-        return await (await session.get(api(path=f"/api/v1/collection/slug/{slug}")).json()
+        return await (await session.get(api(path=f"/api/v1/collection/slug/{slug}"))).json()
 
 
 async def nft(contract_address, token_id, blockchain='ETH'):
