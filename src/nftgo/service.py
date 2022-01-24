@@ -105,3 +105,41 @@ async def tommorrow_drops():
         if start_date == today + datetime.timedelta(days=1):
             tommorrow_drops_.append(drop)
     return tommorrow_drops_
+
+
+async def search_slug(slug):
+    jesponse = await api.search_collection(slug, 0, 100)
+    return list(map(lambda e: e['slug'], jesponse["data"]['collections']))
+
+
+async def all_collection_slug():
+    batch_count = 200
+
+    jesponse = await api.search_collection('', 0, batch_count)
+    total = jesponse['data']['total']
+
+    if total < batch_count:
+        return list(map(lambda e: e['slug'], jesponse["data"]['collections']))
+    else:
+        result_list = list(map(lambda e: e['slug'], jesponse["data"]['collections']))
+        for i in range(1, total // batch_count + 2):
+            jesponse = await api.search_collection('', i * batch_count, batch_count)
+            result_list += list(map(lambda e: e['slug'], jesponse["data"]['collections']))
+        return result_list
+
+
+async def resolve_blockchain_domain(domain, blockchain="ETH") -> str or None:
+    """
+    @return: blockchain address corresponding to domain, or None if not found
+    """
+    async with aiohttp.ClientSession() as session:
+        jesponse = await (await session.get("https://api.nftgo.io/api/v1/account/resolve-name", params={"domain": domain, "bc": blockchain})).json()
+    return jesponse.get("data", {}).get("address")
+
+
+async def rarity(contract_address, token_id, blockchain='ETH'):
+    """
+    :return: rarity of token, or None if not found
+    """
+    nft_basic_info = await api.nft(contract_address, token_id, blockchain)
+    return nft_basic_info['data'].get('rarity')
