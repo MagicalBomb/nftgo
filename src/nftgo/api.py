@@ -55,3 +55,60 @@ async def drops(start_time_s, limit, offset):
 
     async with aiohttp.ClientSession() as session:
         return await (await session.get(api(path="/api/v1/drop/projects", params={"startTime": start_time_ms, "limit": limit, "offset": offset}))).json()
+
+
+class TimeRankEnum:
+    _15M = "15m"
+    _30M = "30m"
+    _1H = "1h"
+    _6H = "6h"
+    _12H = "12h"
+    _24H = "24h"
+    _7D = "7d"
+    _30D = "30d"
+
+
+class OrderByEnum:
+    MINT_NUM = "MintNum"
+    MINT_VOLUME = "MintVolume"
+    MINTER_NUM = "MinterNum"
+    WHALE_NUM = "WhaleNum"
+    TOTAL_GAS_FEE = "TotalGasFee"
+    FIRST_MINT_TIME = "FirstMintTime"
+    FOMO = "Fomo"
+
+
+async def top_mint(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc: bool, only_listed, offset=0, limit=None):
+    """
+    :param offset:
+    :param only_listed:
+    :param limit:
+    :param order_by:
+    :param time_rank:
+    :param is_asc: True for ASC, False for DESC
+    """
+    asc = 1 if is_asc else -1
+    only_listed = 1 if only_listed else -1
+
+    async with aiohttp.ClientSession() as session:
+        return await (
+            await session.get(
+                api(path="/api/v1/ranking/top-mint", params={'timeRank': time_rank, 'by': order_by, 'asc': asc, 'isListed': only_listed, 'limit': limit, 'offset': offset}))
+        ).json()
+
+
+async def mint_whale(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc: bool, offset=0, limit=None):
+    """
+    :param offset:
+    :param limit:
+    :param order_by:
+    :param time_rank:
+    :param is_asc: True for ASC, False for DESC
+    """
+    asc = 1 if is_asc else -1
+
+    async with aiohttp.ClientSession() as session:
+        return await (
+            await session.get(
+                api(path="/api/v1/whales/data/list/mintWhale", params={'timeRank': time_rank, 'by': order_by, 'asc': asc, 'limit': limit, 'offset': offset}))
+        ).json()
