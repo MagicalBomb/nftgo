@@ -112,3 +112,17 @@ async def mint_whale(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc: boo
             await session.get(
                 api(path="/api/v1/whales/data/list/mintWhale", params={'timeRank': time_rank, 'by': order_by, 'asc': asc, 'limit': limit, 'offset': offset}))
         ).json()
+
+
+async def whale_mint_coll(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc: bool, only_listed: bool, offset=0, limit=None):
+    """
+    Get a list of collections that minted by whales in the specified time range.
+    """
+    asc = 1 if is_asc else -1
+    only_listed = 1 if only_listed else -1
+
+    async with aiohttp.ClientSession() as session:
+        return await (
+            await session.get(
+                api(path="/api/v1/whales/data/list/whaleMintColl", params={'timeRank': time_rank, 'by': order_by, 'asc': asc, 'isListed': only_listed, 'limit': limit, 'offset': offset}))
+        ).json()
