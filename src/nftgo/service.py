@@ -107,6 +107,24 @@ async def tommorrow_drops():
     return tommorrow_drops_
 
 
+async def all_whale_mint_coll(time_rank, order_by, is_asc: bool, only_listed: bool):
+    """
+    Almost same as api.whale_mint_coll, but this function would return all collections
+    """
+    limit = 100
+    offset = 0
+
+    jesponse = await api.whale_mint_coll(time_rank, order_by, is_asc, only_listed, limit, offset)
+    if jesponse['errorCode'] != 0:
+        raise ValueError("{}".format(jesponse))
+
+    data = jesponse["data"]
+    if len(data) > limit:
+        return data + await all_whale_mint_coll(time_rank, order_by, is_asc, only_listed, limit, offset + limit)
+    else:
+        return data
+
+
 async def search_slug(slug):
     jesponse = await api.search_collection(slug, 0, 100)
     return list(map(lambda e: e['slug'], jesponse["data"]['collections']))
