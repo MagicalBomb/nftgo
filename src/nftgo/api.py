@@ -117,6 +117,7 @@ async def mint_whale(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc: boo
 async def whale_mint_coll(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc: bool, only_listed: bool, offset=0, limit=None):
     """
     Get a list of collections that minted by whales in the specified time range.
+    There is possibility that the list returned by api is incomplete, so you should call this function again with offset and limit to get the rest of the list.
     """
     asc = 1 if is_asc else -1
     only_listed = 1 if only_listed else -1
