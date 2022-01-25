@@ -1,3 +1,5 @@
+from enum import Enum, auto
+
 import aiohttp
 import furl
 
@@ -68,14 +70,15 @@ class TimeRankEnum:
     _30D = "30d"
 
 
-class OrderByEnum:
-    MINT_NUM = "MintNum"
-    MINT_VOLUME = "MintVolume"
-    MINTER_NUM = "MinterNum"
-    WHALE_NUM = "WhaleNum"
-    TOTAL_GAS_FEE = "TotalGasFee"
-    FIRST_MINT_TIME = "FirstMintTime"
-    FOMO = "Fomo"
+class OrderByEnum(Enum):
+    MINT_NUM = auto()
+    MINT_VOLUME = auto()
+    MINTER_NUM = auto()
+    WHALE_NUM = auto()
+    COLL_NUM = auto()
+    TOTAL_GAS_FEE = auto()
+    FIRST_MINT_TIME = auto()
+    FOMO = auto()
 
 
 async def top_mint(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc: bool, only_listed, offset=0, limit=None):
@@ -89,6 +92,15 @@ async def top_mint(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc: bool,
     """
     asc = 1 if is_asc else -1
     only_listed = 1 if only_listed else -1
+    order_by = {
+        OrderByEnum.MINT_NUM: "MintNum",
+        OrderByEnum.MINT_VOLUME: "MintVolume",
+        OrderByEnum.MINTER_NUM: "MinterNum",
+        OrderByEnum.WHALE_NUM: "WhaleNum",
+        OrderByEnum.TOTAL_GAS_FEE: "TotalGasFee",
+        OrderByEnum.FIRST_MINT_TIME: "FirstMintTime",
+        OrderByEnum.FOMO: "Fomo"
+    }[order_by]
 
     async with aiohttp.ClientSession() as session:
         return await (
@@ -106,6 +118,13 @@ async def mint_whale(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc: boo
     :param is_asc: True for ASC, False for DESC
     """
     asc = 1 if is_asc else -1
+    order_by = {
+        OrderByEnum.MINT_NUM: "MintNum",
+        OrderByEnum.MINT_VOLUME: "MintVolume",
+        OrderByEnum.COLL_NUM: "CollNum",
+        OrderByEnum.TOTAL_GAS_FEE: "TotalGasFee",
+        OrderByEnum.FIRST_MINT_TIME: "FirstMintTime",
+    }[order_by]
 
     async with aiohttp.ClientSession() as session:
         return await (
@@ -121,6 +140,15 @@ async def whale_mint_coll(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc
     """
     asc = 1 if is_asc else -1
     only_listed = 1 if only_listed else -1
+    order_by = {
+        OrderByEnum.MINT_NUM: "WhaleMintNum",
+        OrderByEnum.WHALE_NUM: "WhaleNum",
+        OrderByEnum.MINT_VOLUME: "WhaleMintVolume",
+        OrderByEnum.MINTER_NUM: "MinterNum",
+        OrderByEnum.TOTAL_GAS_FEE: "TotalGasFee",
+        OrderByEnum.FIRST_MINT_TIME: "FirstMintTime",
+        OrderByEnum.FOMO: "Fomo"
+    }
 
     async with aiohttp.ClientSession() as session:
         return await (
