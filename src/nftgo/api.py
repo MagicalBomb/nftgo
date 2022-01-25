@@ -48,7 +48,7 @@ async def block_trades(time_s):
     time_ms = time_s * 1000
     async with aiohttp.ClientSession() as session:
         return await (
-            await session.get(api(path="/api/v1/bot/whales/activities", params={"cid": "all", "action": "all", "scroll": time_ms}))
+            await session.get("https://api.nftgo.io/api/v1/bot/up-price-sales", params={"scroll": time_ms})
         ).json()
 
 
