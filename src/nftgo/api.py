@@ -148,7 +148,7 @@ async def whale_mint_coll(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc
         OrderByEnum.TOTAL_GAS_FEE: "TotalGasFee",
         OrderByEnum.FIRST_MINT_TIME: "FirstMintTime",
         OrderByEnum.FOMO: "Fomo"
-    }
+    }[order_by]
 
     async with aiohttp.ClientSession() as session:
         return await (
