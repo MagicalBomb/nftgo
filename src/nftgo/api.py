@@ -26,6 +26,23 @@ async def collection(slug):
         return await (await session.get(api(path=f"/api/v1/collection/slug/{slug}"))).json()
 
 
+async def collection_metrics(collection_id):
+    async with aiohttp.ClientSession() as session:
+        return await (await session.get(f"https://api.nftgo.io/api/v1/collection/metrics/{collection_id}")).json()
+
+
+async def address(_address):
+    async with aiohttp.ClientSession() as session:
+        return await (await session.get(f"https://api.nftgo.io/api/v1/account/statistic/", params={"address": _address})).json()
+
+
+async def address_metrics(_address, blockchain='ETH'):
+    blockchain = blockchain.upper()
+
+    async with aiohttp.ClientSession() as session:
+        return await (await session.get(f"https://api.nftgo.io/api/v1/collections/holding/", params={"addresses": f"{blockchain}-{_address}"})).json()
+
+
 async def nft(contract_address, token_id, blockchain='ETH'):
     blockchain = blockchain.upper()
 
