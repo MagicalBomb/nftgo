@@ -1,6 +1,8 @@
 import datetime
 import time
 
+import aiohttp
+
 from nftgo import api
 
 
