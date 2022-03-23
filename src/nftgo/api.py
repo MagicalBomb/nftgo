@@ -3,13 +3,15 @@ from enum import Enum, auto
 import aiohttp
 import furl
 
+SCHEME = "https"
 DOMAIN_PRODUCTION = 'api.nftgo.io'
 DOMAIN_DEV = ''
 DOMAIN_DEFAULT = DOMAIN_PRODUCTION
 
 
-def api(path, params={}, domain=DOMAIN_DEFAULT, scheme="https"):
-    return furl.furl(scheme=scheme, host=domain, path=path, args=params).url
+def api(path, params={}):
+    global SCHEME, DOMAIN_DEFAULT
+    return furl.furl(scheme=SCHEME, host=DOMAIN_DEFAULT, path=path, args=params).url
 
 
 async def search_collection(slug, offset=0, limit=100):
@@ -28,19 +30,19 @@ async def collection(slug):
 
 async def collection_metrics(collection_id):
     async with aiohttp.ClientSession() as session:
-        return await (await session.get(f"https://api.nftgo.io/api/v1/collection/metrics/{collection_id}")).json()
+        return await (await session.get(api(path=f"/api/v1/collection/metrics/{collection_id}"))).json()
 
 
 async def address(_address):
     async with aiohttp.ClientSession() as session:
-        return await (await session.get(f"https://api.nftgo.io/api/v1/account/statistic/", params={"address": _address})).json()
+        return await (await session.get(api(path=f"/api/v1/account/statistic/", params={"address": _address}))).json()
 
 
 async def address_metrics(_address, blockchain='ETH'):
     blockchain = blockchain.upper()
 
     async with aiohttp.ClientSession() as session:
-        return await (await session.get(f"https://api.nftgo.io/api/v1/collections/holding/", params={"addresses": f"{blockchain}-{_address}"})).json()
+        return await (await session.get(api(path=f"/api/v1/collections/holding/", params={"addresses": f"{blockchain}-{_address}"}))).json()
 
 
 async def nft(contract_address, token_id, blockchain='ETH'):
@@ -65,7 +67,7 @@ async def block_trades(time_s):
     time_ms = time_s * 1000
     async with aiohttp.ClientSession() as session:
         return await (
-            await session.get("https://api.nftgo.io/api/v1/bot/up-price-sales", params={"scroll": time_ms})
+            await session.get(api(path="/api/v1/bot/up-price-sales", params={"scroll": time_ms}))
         ).json()
 
 
