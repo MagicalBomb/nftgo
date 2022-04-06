@@ -1,8 +1,5 @@
 import datetime
 import time
-
-import aiohttp
-
 from nftgo import api
 
 
@@ -164,9 +161,7 @@ async def resolve_blockchain_domain(domain, blockchain="ETH") -> str or None:
     """
     @return: blockchain address corresponding to domain, or None if not found
     """
-    async with aiohttp.ClientSession() as session:
-        jesponse = await (await session.get("https://api.nftgo.io/api/v1/account/resolve-name", params={"domain": domain, "bc": blockchain})).json()
-    return jesponse.get("data", {}).get("address")
+    return await api.resolve_blockchain_domain(domain, blockchain)
 
 
 async def rarity(contract_address, token_id, blockchain='ETH'):

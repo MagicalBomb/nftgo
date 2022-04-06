@@ -174,3 +174,12 @@ async def whale_mint_coll(time_rank: TimeRankEnum, order_by: OrderByEnum, is_asc
             await session.get(
                 api(path="/api/v1/whales/data/list/whaleMintColl", params={'timeRank': time_rank, 'by': order_by, 'asc': asc, 'isListed': only_listed, 'limit': limit, 'offset': offset}))
         ).json()
+
+
+async def resolve_blockchain_domain(domain, blockchain="ETH") -> str or None:
+    """
+    @return: blockchain address corresponding to domain, or None if not found
+    """
+    async with aiohttp.ClientSession() as session:
+        jesponse = await (await session.get(api(path="/api/v1/account/resolve-name", params={"domain": domain, "bc": blockchain}))).json()
+    return jesponse.get("data", {}).get("address")
