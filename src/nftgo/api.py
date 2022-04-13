@@ -18,7 +18,7 @@ async def search_collection(slug, offset=0, limit=100):
     slug = slug.lower()
 
     async with aiohttp.ClientSession() as session:
-        return await (await session.get(api(path="/api/v1/collections", params={"keyword": slug.lower(), "blockchains": "ETH", "offset": offset, "limit": limit}))).json()
+        return await (await session.get(api(path="/api/v1/collections/raw", params={"keyword": slug.lower(), "blockchains": "ETH", "offset": offset, "limit": limit}))).json()
 
 
 async def collection(slug):
